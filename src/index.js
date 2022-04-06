@@ -1,17 +1,75 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+class Todo extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      todoItems: [
+        { todo: "done", checked: false },
+        { todo: "finito", checked: false },
+      ],
+      newTodo: "",
+    };
+  }
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+  toggleChecked = (todo) =>
+    this.setState({
+      todoItems: this.state.todoItems.map((item) =>
+        item.checked === todo.checked
+          ? { ...item, checked: !item.checked }
+          : item
+      ),
+    });
+
+  display() {
+    return this.state.todoItems.map((item, key) => {
+      return (
+        <div>
+          <h3 key={key}>{item.todo}</h3>
+          <input
+            type='checkbox'
+            checked={item.checked}
+            onChange={this.toggleChecked(item)}
+          />
+        </div>
+      );
+    });
+  }
+
+  newTodo = () => {
+    this.setState({
+      todoItems: [
+        ...this.state.todoItems,
+        { todo: this.state.newTodo, checked: false },
+      ],
+    });
+  };
+
+  updateValue = (e) => {
+    this.setState({ newTodo: e.target.value });
+  };
+  addTodoForm() {
+    return (
+      <div>
+        <input
+          placeholder='add todo'
+          value={this.state.newTodo}
+          onChange={this.updateValue}
+        />
+        <button onClick={this.newTodo}>ADD</button>
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <div>
+        {this.addTodoForm()}
+        {this.display()}
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<Todo />, document.getElementById("root"));
